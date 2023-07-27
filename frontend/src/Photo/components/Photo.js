@@ -409,7 +409,7 @@ function Photo({
 
 function sendToInventory(){
 
-  console.log("photo prediction ",Photo.prediction.detections)
+  //console.log("photo prediction ",Photo.prediction.detections)
   console.log("photo sent to inventory")
 }
 function mapStateToProps(state) {
