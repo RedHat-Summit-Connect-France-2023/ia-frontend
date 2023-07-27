@@ -17,3 +17,5 @@ RUN /usr/libexec/s2i/assemble
 # Run script sourced from builder image based on user input or image metadata.
 # If this file does not exist in the image, the build will fail.
 CMD /usr/libexec/s2i/run
+
+
