@@ -405,13 +405,16 @@ function Photo({
       {renderQRCode()}
     </div>
   );
+
+  function sendToInventory(){
+
+    console.log("photo prediction ",prediction.detections)
+    console.log("photo sent to inventory")
+  }
+
 }
 
-function sendToInventory(){
 
-  //console.log("photo prediction ",Photo.prediction.detections)
-  console.log("photo sent to inventory")
-}
 function mapStateToProps(state) {
   return { ...state.appReducer, ...state.photoReducer };
 }
