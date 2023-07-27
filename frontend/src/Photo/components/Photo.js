@@ -364,7 +364,17 @@ function Photo({
             </div>
           </div>
         </div>
-        <div className="left-button-container button-container" style={displayButtons}></div>
+        <div className="left-button-container button-container" style={displayButtons}>
+        <Button
+            variant="contained"
+            size="large"
+            className="re-take-picture-button"
+            onClick={sendToInventory}
+          >
+            <span className="label-word">Sell it</span>
+          </Button>
+
+        </div>
         <div className="center-button-container button-container" style={displayButtons}>
           <Button
             variant="contained"
@@ -372,8 +382,7 @@ function Photo({
             className="re-take-picture-button"
             onClick={onCameraToggled}
           >
-            <span className="label-word">Try</span>
-            <span className="label-word">again</span>
+            <span className="label-word">Try again </span>
           </Button>
         </div>
         <div className="right-button-container button-container" style={displayButtons}></div>
@@ -398,6 +407,11 @@ function Photo({
   );
 }
 
+function sendToInventory(){
+
+  console.log("photo prediction ",Photo.prediction.detections)
+  console.log("photo sent to inventory")
+}
 function mapStateToProps(state) {
   return { ...state.appReducer, ...state.photoReducer };
 }

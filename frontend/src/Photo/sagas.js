@@ -14,6 +14,7 @@ function* executeSearchPhoto(action) {
   yield put(searchPhotoPending());
   try {
     // const response = yield call(axios.post, photoApiUrl, {photo: action.payload.photo});
+    console.log("saga photo called")
     const response = yield call(axios, {
       method: "POST",
       url: apiUrl,
