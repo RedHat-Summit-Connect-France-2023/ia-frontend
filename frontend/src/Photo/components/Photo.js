@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, } from "react";
 import { connect } from "react-redux";
 import { Button } from "@mui/material";
+import axios from "axios";
 import { resetSearch, searchPhoto } from "../actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,6 +26,7 @@ function Photo({
   status,
 }) {
   const [image, setImage] = useState(null);
+  const [catalog, setCatalog] = useState(null)
   const [cameraEnabled, setCameraEnabled] = useState(null);
   const [video, setVideo] = useState(null);
   const [videoWidth, setVideoWidth] = useState(0);
@@ -368,7 +370,6 @@ function Photo({
         <Button
             variant="contained"
             size="large"
-            className="re-take-picture-button"
             onClick={sendToInventory}
           >
             <span className="label-word">Sell it</span>
@@ -398,22 +399,43 @@ function Photo({
     );
   }
 
+  function displayCatalog(){
+    const displayCatalogLayout = catalog ? {} : { display: "none" };
+    return (
+      <div className="my-catalog" style={displayCatalogLayout}>
+        <h3>My catalog</h3> 
+      </div>
+    );
+  }
+
   return (
     <div className="photo">
       {renderCamera()}
       {renderSnapshot()}
       {renderQRCode()}
+      {displayCatalog()}
     </div>
   );
 
+
   function sendToInventory(){
 
-    console.log("photo prediction ",prediction.detections)
+    axios.get(`https://api.publicapis.org/entries`)
+   .then(response => {
+     const products = response.data
+    
+    console.log("data called",products)
+    //console.log("photo prediction ",prediction.detections)
     console.log("photo sent to inventory")
-  }
+    setImage(false)
+    setCatalog(true)
+  })
+  .catch(error=>{
+    console.error("error api",error)
+  })
 
 }
-
+}
 
 function mapStateToProps(state) {
   return { ...state.appReducer, ...state.photoReducer };
