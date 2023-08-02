@@ -1,5 +1,6 @@
 "use strict";
 
+//comment
 const fastify = require("fastify");
 const { PORT, IP, LOG_LEVEL } = require("./utils/constants");
 
