@@ -26,7 +26,7 @@ function Photo({
   status,
 }) {
   const [image, setImage] = useState(null);
-  const [catalog, setCatalog] = useState(null)
+  const [catalog, setCatalog] = useState(false)
   const [cameraEnabled, setCameraEnabled] = useState(null);
   const [video, setVideo] = useState(null);
   const [videoWidth, setVideoWidth] = useState(0);
@@ -327,17 +327,7 @@ function Photo({
 
 
     let displayNoObjects;
-    /*
-    if (
-      !predictionPending &&
-      prediction &&
-      (!prediction.detections || prediction.detections.length === 0)
-    ) {
-      displayNoObjects = {};
-    } else {
-      displayNoObjects = { display: "none" };
-    }
-    */
+
     displayNoObjects = { display: "none" }; // Never show no objects
 
     return (
@@ -370,7 +360,7 @@ function Photo({
         <Button
             variant="contained"
             size="large"
-            onClick={sendToInventory}
+            onClick={SendToInventory}
           >
             <span className="label-word">Sell it</span>
           </Button>
@@ -418,17 +408,34 @@ function Photo({
   );
 
 
-  function sendToInventory(){
+  function SendToInventory(){
+    const [clothes, setClothes] = useState([])
 
     axios.get(`https://api.publicapis.org/entries`)
    .then(response => {
-     const products = response.data
-    
-    console.log("data called",products)
+
+    let items = response?.data;
+
+    setClothes(items)
+     setImage(false)
+     setCatalog(true)
+    console.log("data raw ",items['entries'])
+    console.log("data clothes", clothes)
     //console.log("photo prediction ",prediction.detections)
     console.log("photo sent to inventory")
-    setImage(false)
-    setCatalog(true)
+    return(
+      <div>
+      {clothes['entries'].map((obj, i) => {
+        return (
+          <div key={i}>
+            <p>{obj?.API}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+    
+   
   })
   .catch(error=>{
     console.error("error api",error)
