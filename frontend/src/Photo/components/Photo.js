@@ -28,6 +28,7 @@ function Photo({
   const [image, setImage] = useState(null);
   const [catalog, setCatalog] = useState(false)
   const [cameraEnabled, setCameraEnabled] = useState(null);
+  const [clothes, setClothes] = useState([])
   const [video, setVideo] = useState(null);
   const [videoWidth, setVideoWidth] = useState(0);
   const [videoHeight, setVideoHeight] = useState(0);
@@ -382,9 +383,11 @@ function Photo({
   }
 
   function renderQRCode() {
+    const displayQRcode = image ? {} : { display: "none" };
+
     return (
       <div className="img-preview">
-        <img src={qrCodeUrl} alt="QR Code" />
+        <img src={qrCodeUrl} alt="QR Code" style={displayQRcode} />
       </div>
     );
   }
@@ -393,9 +396,15 @@ function Photo({
     const displayCatalogLayout = catalog ? {} : { display: "none" };
     return (
       <div className="my-catalog" style={displayCatalogLayout}>
-        <h3>My catalog</h3> 
+        <h3>My catalog 2</h3> 
+        {clothes.map((clothe) =>(
+          <div>
+           <div> API : {clothe.API} </div> 
+           
+           <div> Desc : {clothe.Description} </div>
+           </div>))}
       </div>
-    );
+    )
   }
 
   return (
@@ -409,21 +418,21 @@ function Photo({
 
 
   function SendToInventory(){
-    const [clothes, setClothes] = useState([])
 
     axios.get(`https://api.publicapis.org/entries`)
    .then(response => {
 
     let items = response?.data;
 
-    setClothes(items)
+    setClothes(items['entries'])
      setImage(false)
      setCatalog(true)
+     
     console.log("data raw ",items['entries'])
-    console.log("data clothes", clothes)
+
     //console.log("photo prediction ",prediction.detections)
     console.log("photo sent to inventory")
-    return(
+   /* return(
       <div>
       {clothes['entries'].map((obj, i) => {
         return (
@@ -434,7 +443,7 @@ function Photo({
       })}
     </div>
   );
-    
+    */
    
   })
   .catch(error=>{
