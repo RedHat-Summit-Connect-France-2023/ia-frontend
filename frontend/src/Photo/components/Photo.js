@@ -2,7 +2,47 @@ import React, { useState, useEffect, useCallback, } from "react";
 import { connect } from "react-redux";
 import { Button } from "@mui/material";
 import axios from "axios";
+import testPhoto from "./prediction.PNG"
 import { resetSearch, searchPhoto } from "../actions";
+import {
+  Bullseye,
+  Card,
+  CardHeader,
+  CardActions,
+  CardTitle,
+  CardBody,
+  Checkbox,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownSeparator,
+  DropdownPosition,
+  DropdownToggleCheckbox,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  EmptyStateSecondaryActions,
+  Gallery,
+  KebabToggle,
+  OverflowMenu,
+  OverflowMenuControl,
+  OverflowMenuDropdownItem,
+  OverflowMenuItem,
+  PageSection,
+  PageSectionVariants,
+  Pagination,
+  Select,
+  SelectOption,
+  SelectVariant,
+  TextContent,
+  Text,
+  Title,
+  Toolbar,
+  ToolbarItem,
+  ToolbarFilter,
+  ToolbarContent
+} from '@patternfly/react-core';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleNotch,
@@ -10,6 +50,7 @@ import {
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import bootstrap from 'bootstrap'
 import QRCode from 'qrcode';
 
 import "./Photo.scss";
@@ -27,6 +68,7 @@ function Photo({
 }) {
   const [image, setImage] = useState(null);
   const [catalog, setCatalog] = useState(false)
+  const [productPrediction, setProductPrediction] = useState(false)
   const [cameraEnabled, setCameraEnabled] = useState(null);
   const [clothes, setClothes] = useState([])
   const [video, setVideo] = useState(null);
@@ -266,7 +308,7 @@ function Photo({
         <Button
             variant="contained"
             size="large"
-            onClick={SendToInventory}
+            onClick={GetObjectPrediction}
           >
             <span className="label-word">Sell it</span>
           </Button>
@@ -288,8 +330,11 @@ function Photo({
   }
 
   function renderQRCode() {
-    const displayQRcode = image ? {} : { display: "none" };
+   // const displayQRcode = image ? {} : { display: "none" };
+   // hide qr code
+   // to do , add main variable outside as image ..
 
+   const displayQRcode = qrCodeUrl ? {} : { display: "none" };
     return (
       <div className="img-preview">
         <img src={qrCodeUrl} alt="QR Code" style={displayQRcode} />
@@ -301,39 +346,204 @@ function Photo({
     const displayCatalogLayout = catalog ? {} : { display: "none" };
     return (
       <div className="my-catalog" style={displayCatalogLayout}>
-        <h3>My catalog 2</h3> 
+        <h3>My catalog</h3> 
         {clothes.map((clothe) =>(
           <div>
-           <div> API : {clothe.API} </div> 
+           <div> Name : {clothe.name} </div> 
            
-           <div> Desc : {clothe.Description} </div>
+           <div> Desc : {clothe.description} </div>
            </div>))}
       </div>
     )
   }
 
+  function displayProductPrediction(){
+    const productPredictionLayout = productPrediction ? {} : { display: "none" };
+    return (
+      <div className="sell-item" style={productPredictionLayout}>
+    <div
+  class="pf-v5-l-gallery pf-m-gutter"
+  style="--pf-v5-l-gallery--GridTemplateColumns--min: 260px;"
+>
+{clothes.map((clothe) =>(
+  
+           
+  <div class="pf-v5-c-card">
+    <div class="pf-v5-c-card__title">
+      <h2 class="pf-v5-c-title pf-m-xl">{clothe.name}</h2>
+    </div>
+    <div class="pf-v5-c-card__body">
+      <dl class="pf-v5-c-description-list">
+        <div class="pf-v5-c-description-list__group">
+          <dt class="pf-v5-c-description-list__term">Description</dt>
+          <dd class="pf-v5-c-description-list__description">
+            <div class="pf-v5-c-description-list__text">
+            {clothe.name}
+            </div>
+          </dd>
+        </div>
+        <div class="pf-v5-c-description-list__group">
+          <dt class="pf-v5-c-description-list__term">Price</dt>
+          <dd class="pf-v5-c-description-list__description">
+            <div
+              class="pf-v5-c-description-list__text"
+            >200€</div>
+          </dd>
+        </div>
+        </dl>
+    </div>
+    <hr class="pf-v5-c-divider" />
+    <div class="pf-v5-c-card__footer">
+      <a href="#">View Settings</a>
+    </div>
+  </div>
+))}
+</div>
+</div>)
+
+    
+  }
+
+
+  
+/* 
+ function displayProductPrediction(){
+    const productPredictionLayout = productPrediction ? {} : { display: "none" };
+    return (
+      <div className="sell-item" style={productPredictionLayout}>
+        <h3>Ready to sell ?</h3> 
+        {clothes.map((clothe) =>(
+          <div>
+           <div> Name : {clothe.name} </div> 
+           
+           <div> Desc : {clothe.description} </div>
+           </div>))}
+      </div>
+    )
+  }
+  */
+
+/* 
+  function displayProductPrediction(){
+    const productPredictionLayout = productPrediction ? {} : { display: "none" };
+    return(
+      
+      <div class="container container-cards" style={productPredictionLayout}>
+      {clothes.map((clothe) =>(
+      <div class="row">
+        <div	 class="col-md-4 item"  show-top-border="true"
+            head-title={clothe.name}
+            sub-title={clothe.description}  >
+          <div>
+    
+      <div class="card-pf card-pf-accented">
+                <div  class="card-pf-heading">
+                    <h2 class="card-pf-title">16 oz. Vortex Tumbler</h2>
+                </div>
+                <span class="card-pf-subtitle">Vortex Trumbler</span>
+                
+                <div class="card-pf-body"><div>
+            <div class="col-xs-12">
+            <img class="img-responsive img-circle" src={testPhoto}></img>
+            </div>
+          </div>							
+  
+          <div class="row coolstore-row">
+            <div class="col-xs-12">
+  
+              <div>
+              <span><h1>100 €</h1></span>
+                
+              </div>
+  
+              <form class="form-inline">
+              <div class="form-group">
+                <select name="quan"  class="form-control" id="quan">
+                  <option value="1" selected>1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                
+              </div>
+              <button type="submit" class="btn btn-default">Add To Cart</button>
+            </form>
+            </div>
+          </div>
+        </div>				
+      </div>
+      </div>
+      </div>
+      </div>
+      ))}
+      </div>
+    )
+  } */
+         
+         
+         
+
+  
   return (
     <div className="photo">
       {renderCamera()}
       {renderSnapshot()}
       {renderQRCode()}
       {displayCatalog()}
+      {displayProductPrediction()}
+
     </div>
   );
 
 
-  function SendToInventory(){
+  function GetObjectPrediction(){
 
-    axios.get(`https://api.publicapis.org/entries`)
+    axios.get(`http://localhost:8083/products`)
    .then(response => {
 
     let items = response?.data;
 
-    setClothes(items['entries'])
-     setImage(false)
+     setClothes(items)
+     setImage(true)
+     setCatalog(false)
+     setQRCodeUrl(false)
+     setProductPrediction(true)
+    console.log("data raw ",items)
+
+    //console.log("photo prediction ",prediction.detections)
+    console.log("photo sent to inventory")
+   /* return(
+      <div>
+      {clothes['entries'].map((obj, i) => {
+        return (
+          <div key={i}>
+            <p>{obj?.API}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+    */
+   
+  })
+  .catch(error=>{
+    console.error("error api",error)
+  })
+
+}
+
+  function SendToInventory(){
+
+    axios.get(`http://localhost:8083/products`)
+   .then(response => {
+
+    let items = response?.data;
+
+     setClothes(items)
      setCatalog(true)
      
-    console.log("data raw ",items['entries'])
+    console.log("data raw ",items)
 
     //console.log("photo prediction ",prediction.detections)
     console.log("photo sent to inventory")
@@ -357,6 +567,8 @@ function Photo({
 
 }
 }
+
+
 
 function mapStateToProps(state) {
   return { ...state.appReducer, ...state.photoReducer };
