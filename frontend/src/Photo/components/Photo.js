@@ -79,7 +79,9 @@ function Photo({
   const [zonesCanvas, setZonesCanvas] = useState(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [qrCodeUrl, setQRCodeUrl] = useState('');
+  const [sellItemLayout,setSellItemLayout] = useState(false);
 
+  const userSession = 'aaabbbbaaaa'
   useEffect(() => {
     enableCamera();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,6 +131,9 @@ function Photo({
   }
 
   function onCameraClicked() {
+    console.log(" cam click 1")
+    setSellItemLayout(true)
+    setQRCodeUrl(false)
     updateImageCanvas();
 
     let imageData = imageCanvas.toDataURL("image/jpeg");
@@ -222,6 +227,8 @@ function Photo({
     if (!cameraEnabled || image) {
       return null;
     }
+    //after prediction returned
+    // display the sellingLayout
 
     return (
       <div className="camera">
@@ -277,7 +284,6 @@ function Photo({
     let displayNoObjects;
 
     displayNoObjects = { display: "none" }; // Never show no objects
-
     return (
       <div className="result" style={displayResult}>
         <div className="img-preview">
@@ -308,7 +314,7 @@ function Photo({
         <Button
             variant="contained"
             size="large"
-            onClick={GetObjectPrediction}
+            onClick={displayProductPrediction}
           >
             <span className="label-word">Sell it</span>
           </Button>
@@ -356,15 +362,48 @@ function Photo({
       </div>
     )
   }
+  function sellAnItem(){
 
+    const sellItemDisplay = sellItemLayout ? {} : { display: "none" };
+    return (
+      <div id="selling-form" style={sellItemDisplay}>
+
+
+      <form>
+      <label>
+        Pick your favorite flavor:
+        <select id="select-id">
+          <option value="tshirt" title="tshirt">tshirt</option>
+          <option value="chemise" title="chemise">chemise</option>
+          <option value="manteau" title="manteau">manteau</option>
+          <option value="pull" title="pull">pull</option>
+          <option value="pantalon, bas" title="pantalon, bas">pantalon, bas</option>
+          <option value="chaussures" title="chaussures">chaussures</option>
+          <option value="ensemble" title="ensemble">ensemble</option>
+          <option value="lunettes" title="lunettes">lunettes</option>
+          <option value="cravatte" title="cravatte">cravatte</option>
+          <option value="montre" title="montre">montre</option>
+          <option value="foulard" title="foulard">foulard</option>
+          <option value="redhat" title="redhat">redhat</option>
+          <option value="sac" title="sac">sac</option>
+          <option value="parapluie" title="parapluie">parapluie</option>
+          <option value="accessoire" title="accessoire">accessoire</option>
+</select>
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+          </div>
+    )
+  }
   function displayProductPrediction(){
+    //setSellItemLayout(true)
     const productPredictionLayout = productPrediction ? {} : { display: "none" };
     return (
       <div className="sell-item" style={productPredictionLayout}>
     <div
   class="pf-v5-l-gallery pf-m-gutter"
-  style="--pf-v5-l-gallery--GridTemplateColumns--min: 260px;"
 >
+  
 {clothes.map((clothe) =>(
   
            
@@ -490,16 +529,21 @@ function Photo({
       {renderCamera()}
       {renderSnapshot()}
       {renderQRCode()}
-      {displayCatalog()}
       {displayProductPrediction()}
+      {sellAnItem()}
 
+      
     </div>
   );
 
+ 
+  
+  
 
   function GetObjectPrediction(){
-
+    console.log("called getobj")
     axios.get(`http://localhost:8083/products`)
+
    .then(response => {
 
     let items = response?.data;
@@ -532,6 +576,7 @@ function Photo({
   })
 
 }
+
 
   function SendToInventory(){
 

@@ -9,6 +9,7 @@ import {
 } from "./actions";
 
 const apiUrl = "/api/images";
+const userSession = 'aaabbbbaaaa'
 
 function* executeSearchPhoto(action) {
   yield put(searchPhotoPending());
@@ -18,6 +19,7 @@ function* executeSearchPhoto(action) {
       method: "POST",
       url: apiUrl,
       data: {
+        userId: userSession,
         image: action.payload.photo,
       },
     });
