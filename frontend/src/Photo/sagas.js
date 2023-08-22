@@ -14,13 +14,16 @@ const userSession = 'aaabbbbaaaa'
 function* executeSearchPhoto(action) {
   yield put(searchPhotoPending());
   try {
+    const myBody = new FormData();
+    myBody.append("image",action.payload.photo)
+    myBody.append("userId",userSession)
+
     // const response = yield call(axios.post, photoApiUrl, {photo: action.payload.photo});
     const response = yield call(axios, {
       method: "POST",
       url: apiUrl,
       data: {
-        userId: userSession,
-        image: action.payload.photo,
+        myBody
       },
     });
     yield put(searchPhotoFulfilled(response));
