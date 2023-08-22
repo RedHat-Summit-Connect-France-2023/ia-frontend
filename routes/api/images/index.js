@@ -12,6 +12,8 @@ const Blob = require('buffer');
 module.exports = async function (fastify, opts) {
   fastify.post("/", async function (request, reply) {
     const image = _.get(request, "body.image");
+    const userId = _.get(request,"body.userId")
+
     if (!image) {
       reply.code(422);
       return {
@@ -67,6 +69,9 @@ async function requestObjectDetection(image) {
       url: OBJECT_DETECTION_URL,
       data: formData,
       headers: { ...formData.getHeaders(),},
+      params:{
+        userId:"toto"
+      }
     });
     code = response.status;
     data = response.data;

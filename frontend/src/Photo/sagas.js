@@ -18,10 +18,8 @@ function* executeSearchPhoto(action) {
     const response = yield call(axios, {
       method: "POST",
       url: apiUrl,
-      params:{
-        userId: userSession
-      },
       data: {
+        userId: userSession,
         image: action.payload.photo,
       },
     });
