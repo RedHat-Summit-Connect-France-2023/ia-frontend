@@ -8,7 +8,7 @@ module.exports = function (app) {
     createProxyMiddleware(["/api", "/socket"], {
       target: apiUrl,
       changeOrigin: true,
-      ws: true,
+      ws: false,
     })
   );
 };

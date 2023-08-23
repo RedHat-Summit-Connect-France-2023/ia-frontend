@@ -1,17 +1,29 @@
+import "@patternfly/react-core/dist/styles/base.css";
 import React, { useState, useEffect, useCallback, } from "react";
 import { connect } from "react-redux";
-import { Button } from "@mui/material";
+//import { Button } from "@mui/material";
 import axios from "axios";
 import testPhoto from "./prediction.PNG"
 import { resetSearch, searchPhoto } from "../actions";
 import {
+  Form,
+  FormGroup,
+  TextInput,
+  Checkbox,
+  Popover,
+  ActionGroup,
+  Radio,
+  Button,
+  HelperText,
+  HelperTextItem,
+  FormHelperText,
   Bullseye,
   Card,
   CardHeader,
   CardActions,
+  CardFooter,
   CardTitle,
   CardBody,
-  Checkbox,
   Dropdown,
   DropdownToggle,
   DropdownItem,
@@ -50,11 +62,10 @@ import {
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-import bootstrap from 'bootstrap'
 import QRCode from 'qrcode';
 
 import "./Photo.scss";
-
+import "./fonts.css"
 function Photo({
   reset,
   searchPhoto,
@@ -80,6 +91,8 @@ function Photo({
   const [facingMode, setFacingMode] = useState("environment");
   const [qrCodeUrl, setQRCodeUrl] = useState('');
   const [sellItemLayout,setSellItemLayout] = useState(false);
+  const [pseudo,setPseudo] = useState()
+  const [pseudoDefined,setPseudoDefined] = useState(false)
 
   const userSession = 'aaabbbbaaaa'
   useEffect(() => {
@@ -223,6 +236,15 @@ function Photo({
     }
   }
 
+  // handle userName 
+
+
+  const onSubmitHandlerPseudo = (_event, name: string) => {
+    setPseudo(name);
+    console.log("pseudo set ",pseudo)
+  };
+
+
   function renderCamera() {
     if (!cameraEnabled || image) {
       return null;
@@ -362,6 +384,54 @@ function Photo({
       </div>
     )
   }
+
+  const handlePseudoCreation = (_event) => {
+   
+    console.log("PSEUDO submit ",pseudo)
+
+  }
+
+  const handlePseudoName = (_event,name: string) => {
+    setPseudo(name)
+  }
+
+  function definePseudo(){
+    const displayPseudo = !pseudoDefined ? {} : { display: "none" };
+    return (
+      <Card ouiaId="BasicCard" style={displayPseudo}>
+    <CardTitle>Red Hat Peer-to-Peer Shop</CardTitle>
+    <CardBody>
+  
+      <Form onSubmit={handlePseudoCreation}>
+            <FormGroup
+              label="Saisissez un pseudo pour votre dressing"
+                  
+              isRequired
+              fieldId="simple-form-name-01"
+            >
+              <TextInput
+                isRequired
+                type="text"
+                id="simple-form-name-01"
+                name="userPseudo"
+                aria-describedby="simple-form-name-01-helper"
+                onChange={handlePseudoName}
+              />
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem>Il sera visible des autres utilisateurs </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            </FormGroup>
+            <ActionGroup>
+              <Button variant="primary" onClick={handlePseudoCreation}>C'est parti !</Button>
+            </ActionGroup>
+            </Form>
+            </CardBody>
+            </Card>
+    )
+  }
+
   function sellAnItem(){
 
     const sellItemDisplay = sellItemLayout ? {} : { display: "none" };
@@ -433,7 +503,7 @@ function Photo({
     </div>
     <hr class="pf-v5-c-divider" />
     <div class="pf-v5-c-card__footer">
-      <a href="#">View Settings</a>
+      View Settings
     </div>
   </div>
 ))}
@@ -526,12 +596,13 @@ function Photo({
   
   return (
     <div className="photo">
+      setImage(false)
+      {definePseudo()}
       {renderCamera()}
       {renderSnapshot()}
       {renderQRCode()}
       {displayProductPrediction()}
       {sellAnItem()}
-
       
     </div>
   );
@@ -541,6 +612,7 @@ function Photo({
   
 
   function GetObjectPrediction(){
+  
     console.log("called getobj")
     axios.get(`http://localhost:8083/products`)
 
