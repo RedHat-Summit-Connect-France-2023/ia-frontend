@@ -451,7 +451,6 @@ function Photo({
     )
   }
   function renderCatalog(){
-    //setSellItemLayout(true)
     const productsToSellLayout = catalog ? {} : { display: "none" };
     return (
       <div className="sell-item" style={productsToSellLayout}>
@@ -463,17 +462,19 @@ function Photo({
   
   <Card ouiaId="BasicCard" isSelectable>
     <CardHeader   selectableActions={{
-            selectableActionId: 1,
+            onClickAction: () => console.log(`${clothe.itemId} clicked`),
+            selectableActionId: clothe.itemId,
             selectableActionAriaLabelledby: 'single-selectable-card-example-1',
             name: 'single-selectable-card-example',
             variant: 'single'
           }}
           ></CardHeader>
-    <CardTitle>{clothe.name}</CardTitle>
+    
+    <CardTitle>{clothe.description}</CardTitle>
+    <CardBody>{clothe.name}</CardBody> 
+    <CardBody>Quantity remaining : <div class="pf-u-font-weight-bold">{clothe.quantity}</div></CardBody>  
+    <CardFooter>{clothe.price}</CardFooter>
     <Divider component="div" />
-    <CardBody>{clothe.name}</CardBody>
-    <Divider component="div" />
-    <CardFooter>200€</CardFooter>
   </Card>
 
 
@@ -485,85 +486,10 @@ function Photo({
   }
 
 
-  
-/* 
- function displayProductPrediction(){
-    const productPredictionLayout = productPrediction ? {} : { display: "none" };
-    return (
-      <div className="sell-item" style={productPredictionLayout}>
-        <h3>Ready to sell ?</h3> 
-        {clothes.map((clothe) =>(
-          <div>
-           <div> Name : {clothe.name} </div> 
-           
-           <div> Desc : {clothe.description} </div>
-           </div>))}
-      </div>
-    )
-  }
-  */
 
-/* 
-  function displayProductPrediction(){
-    const productPredictionLayout = productPrediction ? {} : { display: "none" };
-    return(
-      
-      <div class="container container-cards" style={productPredictionLayout}>
-      {clothes.map((clothe) =>(
-      <div class="row">
-        <div	 class="col-md-4 item"  show-top-border="true"
-            head-title={clothe.name}
-            sub-title={clothe.description}  >
-          <div>
-    
-      <div class="card-pf card-pf-accented">
-                <div  class="card-pf-heading">
-                    <h2 class="card-pf-title">16 oz. Vortex Tumbler</h2>
-                </div>
-                <span class="card-pf-subtitle">Vortex Trumbler</span>
-                
-                <div class="card-pf-body"><div>
-            <div class="col-xs-12">
-            <img class="img-responsive img-circle" src={testPhoto}></img>
-            </div>
-          </div>							
   
-          <div class="row coolstore-row">
-            <div class="col-xs-12">
-  
-              <div>
-              <span><h1>100 €</h1></span>
-                
-              </div>
-  
-              <form class="form-inline">
-              <div class="form-group">
-                <select name="quan"  class="form-control" id="quan">
-                  <option value="1" selected>1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-                
-              </div>
-              <button type="submit" class="btn btn-default">Add To Cart</button>
-            </form>
-            </div>
-          </div>
-        </div>				
-      </div>
-      </div>
-      </div>
-      </div>
-      ))}
-      </div>
-    )
-  } 
-   {definePseudo()}
-    
-  */
-         
+
+
          
          
 

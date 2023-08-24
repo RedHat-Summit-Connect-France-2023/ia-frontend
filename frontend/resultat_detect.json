@@ -1,0 +1,10 @@
+OBJECT_DETECTION_URL=https://ia-inference-object-detection-app.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com:8000/predictionsdetections: [
+{
+box: [Object],
+class: 'tshirt, chemise',
+label: 'Tshirt, chemise',
+score: 0.5579747557640076
+}
+],
+image_url: 'https://minio-object-detection.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com/images/dG90bw==/021cf5c9-1153-4493-8864-ab9ff1b47384.jpg'
+}
