@@ -11,6 +11,7 @@ import {
   TextInput,
   Checkbox,
   Popover,
+  Divider,
   ActionGroup,
   Radio,
   Button,
@@ -145,7 +146,7 @@ function Photo({
 
   function onCameraClicked() {
     console.log(" cam click 1")
-    setSellItemLayout(true)
+    setSellItemLayout(false)
     setQRCodeUrl(false)
     updateImageCanvas();
 
@@ -333,9 +334,9 @@ function Photo({
         <Button
             variant="contained"
             size="large"
-            onClick={displayProductPrediction}
+            onClick={getCatalog}
           >
-            <span className="label-word">Sell it</span>
+            <span className="label-word">Show my dressing</span>
           </Button>
 
         </div>
@@ -367,20 +368,6 @@ function Photo({
     );
   }
 
-  function displayCatalog(){
-    const displayCatalogLayout = catalog ? {} : { display: "none" };
-    return (
-      <div className="my-catalog" style={displayCatalogLayout}>
-        <h3>My catalog</h3> 
-        {clothes.map((clothe) =>(
-          <div>
-           <div> Name : {clothe.name} </div> 
-           
-           <div> Desc : {clothe.description} </div>
-           </div>))}
-      </div>
-    )
-  }
 
   const handlePseudoCreation = (_event) => {
    
@@ -437,8 +424,6 @@ function Photo({
     const sellItemDisplay = sellItemLayout ? {} : { display: "none" };
     return (
       <div id="selling-form" style={sellItemDisplay}>
-
-
       <form>
       <label>
         Pick your favorite flavor:
@@ -465,47 +450,33 @@ function Photo({
           </div>
     )
   }
-  function displayProductPrediction(){
+  function renderCatalog(){
     //setSellItemLayout(true)
-    const productPredictionLayout = productPrediction ? {} : { display: "none" };
+    const productsToSellLayout = catalog ? {} : { display: "none" };
     return (
-      <div className="sell-item" style={productPredictionLayout}>
+      <div className="sell-item" style={productsToSellLayout}>
     <div
   class="pf-v5-l-gallery pf-m-gutter"
 >
   
 {clothes.map((clothe) =>(
   
-           
-  <div class="pf-v5-c-card">
-    <div class="pf-v5-c-card__title">
-      <h2 class="pf-v5-c-title pf-m-xl">{clothe.name}</h2>
-    </div>
-    <div class="pf-v5-c-card__body">
-      <dl class="pf-v5-c-description-list">
-        <div class="pf-v5-c-description-list__group">
-          <dt class="pf-v5-c-description-list__term">Description</dt>
-          <dd class="pf-v5-c-description-list__description">
-            <div class="pf-v5-c-description-list__text">
-            {clothe.name}
-            </div>
-          </dd>
-        </div>
-        <div class="pf-v5-c-description-list__group">
-          <dt class="pf-v5-c-description-list__term">Price</dt>
-          <dd class="pf-v5-c-description-list__description">
-            <div
-              class="pf-v5-c-description-list__text"
-            >200€</div>
-          </dd>
-        </div>
-        </dl>
-    </div>
-    <hr class="pf-v5-c-divider" />
-    <div class="pf-v5-c-card__footer">
-      View Settings
-    </div>
-  </div>
+  <Card ouiaId="BasicCard" isSelectable>
+    <CardHeader   selectableActions={{
+            selectableActionId: 1,
+            selectableActionAriaLabelledby: 'single-selectable-card-example-1',
+            name: 'single-selectable-card-example',
+            variant: 'single'
+          }}
+          ></CardHeader>
+    <CardTitle>{clothe.name}</CardTitle>
+    <Divider component="div" />
+    <CardBody>{clothe.name}</CardBody>
+    <Divider component="div" />
+    <CardFooter>200€</CardFooter>
+  </Card>
+
+
 ))}
 </div>
 </div>)
@@ -603,7 +574,7 @@ function Photo({
     {renderCamera()}
     {renderSnapshot()}
     {renderQRCode()}
-    {displayProductPrediction()}
+    {renderCatalog()}
     {sellAnItem()}
       
     </div>
@@ -652,7 +623,7 @@ function Photo({
 }
 
 
-  function SendToInventory(){
+  function getCatalog(){
 
     axios.get(`http://localhost:8083/products`)
    .then(response => {
