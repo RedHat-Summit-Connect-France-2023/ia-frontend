@@ -236,24 +236,21 @@ function Photo({
     }
   }
 
-  // handle userName 
 
-
-  const onSubmitHandlerPseudo = (_event, name: string) => {
-    setPseudo(name);
-    console.log("pseudo set ",pseudo)
-  };
 
 
   function renderCamera() {
+    const displayResult = pseudoDefined ? {} : { display: "none" };
+    console.log("RenderCamera ", pseudoDefined)
     if (!cameraEnabled || image) {
       return null;
     }
     //after prediction returned
     // display the sellingLayout
-
+    console.log("RenderCamera 2 ", displayResult)
     return (
-      <div className="camera">
+
+      <div className="camera" style={displayResult}>
         <div className="img-preview">
           <div className="img-container">
             <video
@@ -388,6 +385,9 @@ function Photo({
   const handlePseudoCreation = (_event) => {
    
     console.log("PSEUDO submit ",pseudo)
+    setQRCodeUrl(false)
+    
+    setPseudoDefined(true)
 
   }
 
@@ -402,7 +402,7 @@ function Photo({
     <CardTitle>Red Hat Peer-to-Peer Shop</CardTitle>
     <CardBody>
   
-      <Form onSubmit={handlePseudoCreation}>
+      <Form>
             <FormGroup
               label="Saisissez un pseudo pour votre dressing"
                   
@@ -588,7 +588,10 @@ function Photo({
       ))}
       </div>
     )
-  } */
+  } 
+   {definePseudo()}
+    
+  */
          
          
          
@@ -596,13 +599,12 @@ function Photo({
   
   return (
     <div className="photo">
-      setImage(false)
-      {definePseudo()}
-      {renderCamera()}
-      {renderSnapshot()}
-      {renderQRCode()}
-      {displayProductPrediction()}
-      {sellAnItem()}
+    {definePseudo()}
+    {renderCamera()}
+    {renderSnapshot()}
+    {renderQRCode()}
+    {displayProductPrediction()}
+    {sellAnItem()}
       
     </div>
   );
