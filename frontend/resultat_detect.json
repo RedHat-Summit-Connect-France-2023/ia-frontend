@@ -1,10 +1,19 @@
-OBJECT_DETECTION_URL=https://ia-inference-object-detection-app.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com:8000/predictionsdetections: [
-{
-box: [Object],
-class: 'tshirt, chemise',
-label: 'Tshirt, chemise',
-score: 0.5579747557640076
-}
-],
-image_url: 'https://minio-object-detection.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com/images/dG90bw==/021cf5c9-1153-4493-8864-ab9ff1b47384.jpg'
-}
+const [categoryItem, setCategoryItem] = useState([]);
+
+const dataset = {
+    detections: [
+    {
+    box: [Object],
+    class: 'redhat',
+    label: 'Redhat',
+    score: 0.9655831456184387
+    },
+    {
+    box: [Object],
+    class: 'tshirt, chemise',
+    label: 'Tshirt, chemise',
+    score: 0.6621403098106384
+    }
+    ],
+    image_url: 'https://minio-object-detection.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com/images/dG90bw==/b55e6a76-a56a-4c0a-85c6-911c95a48d33.jpg'
+    }
