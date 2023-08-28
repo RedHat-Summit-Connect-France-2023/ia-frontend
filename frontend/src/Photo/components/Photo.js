@@ -35,6 +35,8 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateSecondaryActions,
+  FormSelect,
+  FormSelectOption,
   Gallery,
   KebabToggle,
   OverflowMenu,
@@ -91,9 +93,10 @@ function Photo({
   const [zonesCanvas, setZonesCanvas] = useState(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [qrCodeUrl, setQRCodeUrl] = useState('');
-  const [sellItemLayout,setSellItemLayout] = useState(false);
   const [pseudo,setPseudo] = useState()
   const [pseudoDefined,setPseudoDefined] = useState(false)
+  const [itemToSell,setItemToSell] = useState(false)
+
 
   const userSession = 'aaabbbbaaaa'
   useEffect(() => {
@@ -146,7 +149,6 @@ function Photo({
 
   function onCameraClicked() {
     console.log(" cam click 1")
-    setSellItemLayout(false)
     setQRCodeUrl(false)
     updateImageCanvas();
 
@@ -384,6 +386,7 @@ function Photo({
 
   function definePseudo(){
     const displayPseudo = !pseudoDefined ? {} : { display: "none" };
+
     return (
       <Card ouiaId="BasicCard" style={displayPseudo}>
     <CardTitle>Red Hat Peer-to-Peer Shop</CardTitle>
@@ -404,12 +407,7 @@ function Photo({
                 aria-describedby="simple-form-name-01-helper"
                 onChange={handlePseudoName}
               />
-              <FormHelperText>
-                <HelperText>
-                  <HelperTextItem>Il sera visible des autres utilisateurs </HelperTextItem>
-                </HelperText>
-              </FormHelperText>
-            </FormGroup>
+              </FormGroup>
             <ActionGroup>
               <Button variant="primary" onClick={handlePseudoCreation}>C'est parti !</Button>
             </ActionGroup>
@@ -421,9 +419,19 @@ function Photo({
 
   function sellAnItem(){
 
-    const sellItemDisplay = sellItemLayout ? {} : { display: "none" };
+    const categories = [
+      {
+        groupLabel: 'Group1',
+        disabled: false,
+        options: [
+          { value: '1', label: 'tshirt', disabled: false }
+          
+        ]
+      }
+    ]
+   
     return (
-      <div id="selling-form" style={sellItemDisplay}>
+      <div id="selling-form">
       <form>
       <label>
         Pick your favorite flavor:
@@ -450,31 +458,168 @@ function Photo({
           </div>
     )
   }
+
+  const handleEditItem = (index) => {
+    return() =>{
+    console.log("CLICK GRID")
+
+
+    const dataset1 = {
+      detections: [
+      {
+      box: [Object],
+      class: 'redhat',
+      label: 'Redhat',
+      score: 0.9655831456184387
+      },
+      {
+      box: [Object],
+      class: 'tshirt, chemise',
+      label: 'Tshirt, chemise',
+      score: 0.6621403098106384
+      }
+      ],
+      image_url: 'https://minio-object-detection.apps.cluster-4nfxq.4nfxq.sandbox3107.opentlc.com/images/dG90bw==/b55e6a76-a56a-4c0a-85c6-911c95a48d33.jpg'
+      }
+
+    const dataset =
+            [{
+          box: "test",
+          class: 'redhat',
+          label: 'Redhat',
+          score: 0.9655831456184387
+          },
+          {
+          box: "test",
+          class: 'tshirt, chemise',
+          label: 'Tshirt, chemise',
+          score: 0.6621403098106384
+          }
+        ]
+        console.log(" dataset raw 0",dataset1)
+    console.log(" dataset raw ",dataset1["detections"])
+   //console.log(" dataset raw1 ",dataset["detections"])
+    //console.log(" dataset raw2 ",dataset[0]["detections"])
+
+   
+    setProductPrediction(dataset1["detections"])
+    // clothes set to comment for testing object detection
+    //setClothes([clothes[index]])
+    setItemToSell(true)
+    setCatalog(false)
+    console.log("EDIT Item ",index)
+
+    console.log("clothe ",clothes[index])
+ 
+  }
+}
+
+
+
+
+ function renderItemToSell(){
+  
+        const itemToSellDisplay = itemToSell ? {} : { display: "none" };
+        const options = [
+          { value: "tshirt" , label : "tshirt" },
+          { value: "chemise" , label : "chemise" },
+          { value: "manteau" , label : "manteau" },
+          { value: "pull" , label : "pull" },
+          { value: "pantalon, bas" , label : "pantalon, bas" },
+          { value: "chaussures" , label : "chaussures" },
+          { value: "ensemble" , label : "ensemble" },
+          { value: "lunettes" , label : "lunettes" },
+          { value: "cravatte" , label : "cravatte" },
+          { value: "montre" , label : "montre" },
+          { value: "foulard" , label : "foulard" },
+          { value: "redhat" , label : "redhat" },
+          { value: "sac" , label : "sac" },
+          { value: "parapluie" , label : "parapluie" },
+          { value: "accessoire" , label : "accessoire" }
+        ]
+       
+
+        console.log("RAW Predicts ",productPrediction)
+        let  clotheToEdit
+
+        if(!productPrediction){
+          clotheToEdit = clothes
+        }
+        else{
+          clotheToEdit = productPrediction
+        }
+        // hide catalog 
+
+        console.log("ClotheToEdit ",clotheToEdit)
+        return(
+          <div className="sell-item"  style={itemToSellDisplay}> 
+    <div class="pf-v5-l-gallery pf-m-gutter">
+          {clotheToEdit.map((clothe,index) =>(
+             
+
+          <Card ouiaId="BasicCard">
+          <CardBody>
+  
+        <Form>
+        <FormGroup
+          label="Description" isRequired fieldId="simple-form-name-01" >
+          <TextInput isRequired type="text" value={clothe.description} id="simple-form-name-01" name="descriptipn" aria-describedby="simple-form-name-01-helper"/>
+        </FormGroup>
+        <FormGroup
+          label="Name" isRequired fieldId="simple-form-name-01" >
+          <TextInput isRequired type="text" value={clothe.label} id="simple-form-name-01" name="clotheName" aria-describedby="simple-form-name-01-helper"/>
+        </FormGroup>
+        <FormGroup label="Item Category">
+        <FormSelect 
+          id="category"
+          aria-label="FormSelect Input"
+          value={clothe.class}
+          isRequired fieldId="simple-form-name-01" >
+          {options.map((option, index) => (
+            <FormSelectOption
+              key={index}
+              value={option.value}
+              label={option.label}
+            />
+          ))}
+        </FormSelect>
+        </FormGroup>
+        <ActionGroup>
+          <Button variant="primary" onClick={handlePseudoCreation}>C'est parti !</Button>
+        </ActionGroup>
+        </Form>
+        </CardBody>
+        </Card>
+          ))
+          }
+    </div>
+          </div>
+        )
+      }
+  
   function renderCatalog(){
     const productsToSellLayout = catalog ? {} : { display: "none" };
     return (
-      <div className="sell-item" style={productsToSellLayout}>
-    <div
-  class="pf-v5-l-gallery pf-m-gutter"
->
+    <div className="item-catalog" style={productsToSellLayout}>
+        <div
+      class="pf-v5-l-gallery pf-m-gutter"
+    >
   
-{clothes.map((clothe) =>(
+  {clothes.map((clothe,index) =>(
   
-  <Card ouiaId="BasicCard" isSelectable>
-    <CardHeader   selectableActions={{
-            onClickAction: () => console.log(`${clothe.itemId} clicked`),
-            selectableActionId: clothe.itemId,
-            selectableActionAriaLabelledby: 'single-selectable-card-example-1',
-            name: 'single-selectable-card-example',
-            variant: 'single'
-          }}
-          ></CardHeader>
-    
+  <Card ouiaId="BasicCard">
+
     <CardTitle>{clothe.description}</CardTitle>
     <CardBody>{clothe.name}</CardBody> 
     <CardBody>Quantity remaining : <div class="pf-u-font-weight-bold">{clothe.quantity}</div></CardBody>  
-    <CardFooter>{clothe.price}</CardFooter>
+    <CardBody>{clothe.price}</CardBody>
+    <CardFooter>
+    <Button onClick={handleEditItem(index)} variant="secondary" size="small">
+      Edit
+    </Button>
+    </CardFooter>
     <Divider component="div" />
+
   </Card>
 
 
@@ -501,7 +646,7 @@ function Photo({
     {renderSnapshot()}
     {renderQRCode()}
     {renderCatalog()}
-    {sellAnItem()}
+    {renderItemToSell()}
       
     </div>
   );
