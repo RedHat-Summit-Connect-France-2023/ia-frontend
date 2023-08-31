@@ -83,7 +83,7 @@ function Photo({
 }) {
   const [image, setImage] = useState(null);
   const [catalog, setCatalog] = useState(false)
-  const [productPrediction, setProductPrediction] = useState([])
+  const [productPrediction, setProductPrediction] = useState(false)
   const [cameraEnabled, setCameraEnabled] = useState(null);
   const [clothes, setClothes] = useState([])
   const [video, setVideo] = useState(null);
@@ -188,7 +188,6 @@ function Photo({
       return;
     }
     const displayBox = prediction.displayBox;
-    toClotheObject(prediction)
     prediction.detections.filter((d) => d.score > minScore).forEach((d) => drawDetection(d,displayBox));
   }
 
@@ -296,26 +295,32 @@ function Photo({
   function renderSnapshot() {
     const displayResult = image ? {} : { display: "none" };
 
+
+  
+
     const displayButtons = predictionPending ? { display: "none" } : {};
     const displayLoading = predictionPending ? {} : { display: "none" };
+
 
    const displayError =
       (!predictionPending && predictionError) || (!inventoryImage)
         ? { width: `${videoWidth}px`, height: `${videoHeight}px` }
         : { display: "none" };
 
+
+// for testing purpose
+    
+
     const displayImage =
       (!predictionPending && !predictionError && prediction) ? {} : { display: "none" };
 
+
+
+
     let displayNoObjects;
-
-    // Get Predictions from IA inference
-
-    
 
     displayNoObjects = { display: "none" }; // Never show no objects
     return (
-
       <div className="result" style={displayResult}>
         <div className="img-preview">
           <div className="error-container" style={displayError}>
@@ -426,26 +431,24 @@ function Photo({
     )
   }
 
-  const handleSellItem = (e,index,attribute) => {
-
-    
-    const updatedObject = itemToSell[index]
-    setItemToEdit({...itemToEdit,[attribute]:e})
-
-    updatedObject[attribute]= e
-
-    console.log("Updated Object",updatedObject)
-  console.log("clik item", "value ", e," index ",index," attribute",attribute)
 
 
+    const handleSellItem = (e,index,attribute) => {
+      /*
+      setItemToEdit(
+          itemToEdit.map((item) =>
+              // Here you accept a id argument to the function and replace it with hard coded 🤪 2, to make it dynamic.
+              item.id === index
+                  ? { ...item, attribute : e }
+                  : { ...item }
+          )
+      );
+      */
   };
-
 
   const handleEditItem = (index) => {
     return() =>{
     
-    // draw image from url in canvas
-   
 
     const dataset1 = {
       detections: [
@@ -468,11 +471,8 @@ function Photo({
       setInventoryImage(dataset1["image_url"])
       console.log(" dataset raw ",dataset1["detections"])
 
-      toClotheObject(dataset1["detections"])
 
-/* 
       dataset1["detections"].map(function(o,i) {
- 
         const clothObj =
         {
           id: "",
@@ -482,21 +482,23 @@ function Photo({
           price: "",
           image_url:""
         }
-
         clothObj.class= o.class
         clothObj.id = i 
-        return(
-          
+        return(   
           setItemToSell((prevItems)=> [...prevItems,clothObj]) 
-          
-  
-      
-      )}); */
+      )});
         
+          // set a new array to store updated object and differenciate from itemToSell as it is used to display value in form
+      setItemToEdit(itemToSell)
+
+        
+      
+
   
         console.log(" dataset raw 0",dataset1)
     console.log(" dataset raw ",dataset1["detections"])
-  
+   //console.log(" dataset raw1 ",dataset["detections"])
+    //console.log(" dataset raw2 ",dataset[0]["detections"])
 
    
     //setProductPrediction(dataset1["detections"])
@@ -527,40 +529,11 @@ function renderInventoryImage(){
   )
 }
 
-const toClotheObject = (products) =>{
+function sendToInventory(){
 
-  products.map(function(o,i) {
- 
-    const clothObj =
-    {
-      id: "",
-      name: "",
-      class: "",
-      description: "",
-      price: "",
-      image_url:""
-    }
-
-    clothObj.class= o.class
-    clothObj.id = i 
-  
-      return(
-      setItemToSell((prevItems)=> [...prevItems,clothObj]) )
-  })
-}
-
-const sendToInventory = (index) => {
-  return() =>{
-
-  console.log("INDEX INVENTORY ",index)
-
-  //console.log(" RAW INVENTORY ", itemToSell)
-  
-  let payload = itemToSell[index]
-  console.log("SEND TO INVENTORY ",payload)
-
+  console.log("SEND TO INVENTORY ",itemToEdit)
   axios.post('http://localhost:8083/products', {
-    payload
+    itemToEdit
   })
   .then((response) => {
     console.log("POST ",response);
@@ -570,14 +543,12 @@ const sendToInventory = (index) => {
 
   
 }
-}
-
 
   
 
 
 
- function renderShopWindow(){
+ function rendershopWindow(){
   
         const shopWindowDisplay = shopWindow ? {} : { display: "none" };
         const options = [
@@ -664,7 +635,7 @@ const sendToInventory = (index) => {
          </FormSelect>
          </FormGroup>
         <ActionGroup>
-          <Button variant="primary" onClick={sendToInventory(index)} >Sell !</Button>
+          <Button variant="primary" onClick={sendToInventory} >Sell !</Button>
         </ActionGroup>
         </Form>
         </CardBody>
@@ -726,7 +697,7 @@ const sendToInventory = (index) => {
     {renderInventoryImage()}
     {renderQRCode()}
     {renderCatalog()}
-    {renderShopWindow()}
+    {rendershopWindow()}
       
     </div>
   );
