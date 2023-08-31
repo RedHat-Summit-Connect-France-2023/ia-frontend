@@ -258,6 +258,7 @@ function Photo({
     return (
 
       <div className="camera" style={displayResult}>
+        <Title headingLevel="h2" >Take a picture of items you want to sell/give !</Title>
         <div className="img-preview">
           <div className="img-container">
             <video
@@ -531,16 +532,34 @@ const toClotheObject = (products) =>{
 
   products.map(function(o,i) {
  
-    const clothObj =
+    const clothObj = {
+    "description": "",
+        "itemId": '',
+        "link": "",
+        "location": "",
+        "name": "",
+        "price": 0.0,
+        "quantity": 1,
+        "image_url":""
+    }
+
+   /*  const clothObj =
     {
       id: "",
       name: "",
       class: "",
       description: "",
-      price: "",
+      price: '',
       image_url:""
-    }
+    } */
+    // set price to 0 when it is predicted
 
+    if (o.price== null){
+      clothObj.price=0.0
+    }
+    if (o.itemId== null){
+      clothObj.itemId=0
+    }
     clothObj.class= o.class
     clothObj.id = i 
   
@@ -556,12 +575,14 @@ const sendToInventory = (index) => {
 
   //console.log(" RAW INVENTORY ", itemToSell)
   
-  let payload = itemToSell[index]
-  console.log("SEND TO INVENTORY ",payload)
+  let payload1 = itemToSell[index]
+  console.log("SEND TO INVENTORY ",payload1)
 
-  axios.post('http://localhost:8083/products', {
-    payload
-  })
+  axios.post('http://localhost:8083/products', 
+    payload1
+  ,{headers:
+    {'Content-Type': 'application/json'}
+      })
   .then((response) => {
     console.log("POST ",response);
   }, (error) => {
@@ -598,6 +619,16 @@ const sendToInventory = (index) => {
           { value: "accessoire" , label : "accessoire" }
         ]
        
+        const quantities = [
+          { value: "0" , label : "0" },
+          { value: "1" , label : "1" },
+          { value: "2" , label : "2" },
+          { value: "3" , label : "3" },
+          { value: "4" , label : "4" },
+          { value: "5" , label : "5" },
+      
+
+        ]
         const prices = [
           { value: "0" , label : "Free" },
           { value: "1" , label : "1" },
@@ -623,15 +654,7 @@ const sendToInventory = (index) => {
           <CardBody>
   
         <Form>
-        <FormGroup
-          label="Name" isRequired fieldId="simple-form-name-01" >
-          <TextInput isRequired type="text" onChange={e => handleSellItem(e.target.value,index,"name")} value={clothe.name} id="simple-form-name-02" name="itemName" aria-describedby="simple-form-name-01-helper"/>
-        </FormGroup>
-        <FormGroup
-          label="Description" isRequired fieldId="simple-form-name-02" >
-          <TextInput isRequired type="text" onChange={e => handleSellItem(e.target.value,index,"description")} value={clothe.description} id="simple-form-name-03" name="descriptipn" aria-describedby="simple-form-name-01-helper"/>
-        </FormGroup>
-        <FormGroup label="Item Category">
+        <FormGroup label="Item Category Predicted by AI">
         <FormSelect 
           id="category"
           aria-label="FormSelect Input"
@@ -647,6 +670,30 @@ const sendToInventory = (index) => {
           ))}
         </FormSelect>
         </FormGroup>
+        <FormGroup
+          label="Name" isRequired fieldId="simple-form-name-01" >
+          <TextInput isRequired type="text" onChange={e => handleSellItem(e.target.value,index,"name")} value={clothe.name} id="simple-form-name-02" name="itemName" aria-describedby="simple-form-name-01-helper"/>
+        </FormGroup>
+        <FormGroup
+          label="Description" isRequired fieldId="simple-form-name-02" >
+          <TextInput isRequired type="text" onChange={e => handleSellItem(e.target.value,index,"description")} value={clothe.description} id="simple-form-name-03" name="descriptipn" aria-describedby="simple-form-name-01-helper"/>
+        </FormGroup>
+        <FormGroup label="Quantity to sell">
+           <FormSelect 
+           onChange={e => handleSellItem(e.target.value,index,"quantity")}
+           id="price"
+           aria-label="FormSelect Input"
+           value={clothe.quantity}
+           isRequired fieldId="simple-form-name-04" >
+           {quantities.map((qty, index) => (
+             <FormSelectOption
+               key={index}
+               value={qty.value}
+               label={qty.label}
+             />
+           ))}
+         </FormSelect>
+         </FormGroup>
         <FormGroup label="Price (€)">
            <FormSelect 
            onChange={e => handleSellItem(e.target.value,index,"price")}
@@ -720,6 +767,11 @@ const sendToInventory = (index) => {
   
   return (
     <div className="photo">
+      <div>
+    <Title class="pf-v5-u-text-align-center" headingLevel="h1"> The Good Corner </Title>
+    <br></br>
+    </div>
+
     {definePseudo()}
     {renderCamera()}
     {renderSnapshot()}
