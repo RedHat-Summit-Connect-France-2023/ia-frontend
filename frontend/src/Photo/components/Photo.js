@@ -94,16 +94,22 @@ function Photo({
   const [zonesCanvas, setZonesCanvas] = useState(null);
   const [facingMode, setFacingMode] = useState("environment");
   const [qrCodeUrl, setQRCodeUrl] = useState('');
-  const [pseudo,setPseudo] = useState()
+  const [pseudo,setPseudo] = useState({pseudoName:"", pseudoId:-1})
   const [pseudoDefined,setPseudoDefined] = useState(false)
   const [shopWindow,setshopWindow] = useState(false)
   // InventoryImage is used to display an image from inventory when there is no prediction to display (display sellingItem)
   const [inventoryImage,setInventoryImage]= useState(false)
   const [itemToSell,setItemToSell] = useState([])
   const [itemToEdit,setItemToEdit] = useState([])
+  const [pseudoUnicityError,setPseusoUnicityError] = useState(false)
 
 
-  
+useEffect(() => {
+  // check if pseudo Defined
+  const pseudo = JSON.parse(localStorage.getItem('pseudo'))
+  setPseudoDefined((pseudo.pseudoId!==-1))
+  setPseudo(pseudo)
+}, []);
 
   const userSession = 'aaabbbbaaaa'
   useEffect(() => {
@@ -249,6 +255,7 @@ function Photo({
 
 
   function renderCamera() {
+    
     const displayResult = pseudoDefined ? {} : { display: "none" };
     if (!cameraEnabled || image) {
       return null;
@@ -295,7 +302,7 @@ function Photo({
   }
 
   function renderSnapshot() {
-    const displayResult = image ? {} : { display: "none" };
+    const displayResult = (image || shopWindow) ? {} : { display: "none" };
 
     const displayButtons = predictionPending ? { display: "none" } : {};
     const displayLoading = predictionPending ? {} : { display: "none" };
@@ -350,16 +357,15 @@ function Photo({
           >
             <span className="label-word">Show my dressing</span>
           </Button>
-
         </div>
         <div className="center-button-container button-container" style={displayButtons}>
           <Button
             variant="contained"
             size="large"
-            className="re-take-picture-button"
+        
             onClick={onCameraToggled}
           >
-            <span className="label-word">Try again </span>
+            <span className="label-word">Take a new picture ! </span>
           </Button>
         </div>
         <div className="right-button-container button-container" style={displayButtons}></div>
@@ -372,7 +378,7 @@ function Photo({
    // hide qr code
    // to do , add main variable outside as image ..
 
-   const displayQRcode = qrCodeUrl ? {} : { display: "none" };
+   const displayQRcode = !pseudoDefined ? {} : { display: "none" };
     return (
       <div className="img-preview">
         <img src={qrCodeUrl} alt="QR Code" style={displayQRcode} />
@@ -382,20 +388,48 @@ function Photo({
 
 
   const handlePseudoCreation = (_event) => {
-   
-    setQRCodeUrl(false)
+
     
-    setPseudoDefined(true)
+      axios.post('http://localhost:8083/pseudos', 
+      {"pseudoName" : pseudo.pseudoName}
+    ,{headers:
+      {'Content-Type': 'application/json'}
+        })
+    .then((response) => {
+      var idCreated = response.data
+      pseudo.pseudoId= idCreated
+
+      setPseudo(pseudo)
+      console.log("Id  created ",idCreated);
+
+      console.log("NEW Pseudo ",pseudo)
+      localStorage.setItem('pseudo', JSON.stringify(pseudo));
+      setQRCodeUrl(false)
+      setPseusoUnicityError(false)
+      setPseudoDefined(true)
+    }, (error) => {
+      console.log("POST ",error);
+      setPseusoUnicityError(true)
+    });
+   
+
 
   }
 
   const handlePseudoName = (_event,name) => {
-    setPseudo(name)
     
+    setPseudo({...pseudo,pseudoName:name})
+    console.log("Pseudo change ",pseudo)
   }
 
   function definePseudo(){
-    const displayPseudo = !pseudoDefined ? {} : { display: "none" };
+   
+    const pseudoDefinedID = JSON.parse(localStorage.getItem('pseudo')).pseudoId
+    console.log("PSEUDO ID -- ",pseudoDefinedID)
+    const displayPseudo =  !pseudoDefined ? {}: { display: "none" };
+    const displayPseudoError = pseudoUnicityError ? {} : { display: "none" };
+    console.log(" PSEUDO Displayed ",displayPseudo)
+    console.log ( "PSEUDO Defined ",pseudoDefined)
 
     return (
       <Card ouiaId="BasicCard" style={displayPseudo}>
@@ -417,6 +451,10 @@ function Photo({
                 aria-describedby="simple-form-name-01-helper"
                 onChange={handlePseudoName}
               />
+               <HelperText style={displayPseudoError}>
+      <HelperTextItem variant="error">Your pseudo is already taken !</HelperTextItem>
+             </HelperText>
+
               </FormGroup>
             <ActionGroup>
               <Button variant="primary" onClick={handlePseudoCreation}>C'est parti !</Button>
@@ -540,7 +578,8 @@ const toClotheObject = (products) =>{
         "name": "",
         "price": 0.0,
         "quantity": 1,
-        "image_url":""
+        "image_url":"",
+        "userId":""
     }
 
    /*  const clothObj =
@@ -562,6 +601,7 @@ const toClotheObject = (products) =>{
     }
     clothObj.class= o.class
     clothObj.id = i 
+    clothObj.userId = pseudo.pseudoId
   
       return(
       setItemToSell((prevItems)=> [...prevItems,clothObj]) )
@@ -575,11 +615,11 @@ const sendToInventory = (index) => {
 
   //console.log(" RAW INVENTORY ", itemToSell)
   
-  let payload1 = itemToSell[index]
-  console.log("SEND TO INVENTORY ",payload1)
+  let payload = itemToSell[index]
+  console.log("SEND TO INVENTORY ",payload)
 
   axios.post('http://localhost:8083/products', 
-    payload1
+    payload
   ,{headers:
     {'Content-Type': 'application/json'}
       })
@@ -640,7 +680,7 @@ const sendToInventory = (index) => {
         ]
 
         console.log("ITEM TO SELL ",itemToSell)
-
+        
         
      
         return(
@@ -769,6 +809,8 @@ const sendToInventory = (index) => {
     <div className="photo">
       <div>
     <Title class="pf-v5-u-text-align-center" headingLevel="h1"> The Good Corner </Title>
+    <Title class="pf-v5-u-text-align-center" headingLevel="h2"> Welcome {pseudo.pseudoName} </Title>
+
     <br></br>
     </div>
 
@@ -827,6 +869,8 @@ const sendToInventory = (index) => {
 
   function getCatalog(){
 
+    // route to update to get items by userId
+   // http://localhost:8083/products/pseudo.pseudoId
     axios.get(`http://localhost:8083/products`)
    .then(response => {
 
