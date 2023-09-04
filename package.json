@@ -1,49 +1,50 @@
 {
-  "name": "object-detection-app",
-  "version": "0.1.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "build": "cd frontend && npm install && npm run build --force",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "NODE_ENV=development fastify start -w -p ${PORT:-8080} -l debug -P app.js",
-    "dev-all": "concurrently \"scripts/dev-backend.sh\" \"scripts/dev-frontend.sh\"",
-    "format": "prettier --write \"routes/**/*.{js,json}\" \"storage/**/*.{js,json}\" \"kafka/**/*.{js,json}\" \"socket/**/*.{js,json}\" \"frontend/src/**/*.{js,jsx,ts,tsx,json,css,scss}\" \"*.js\""
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "frontend/src/*"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rh-aiservices-bu/object-detection-app.git"
-  },
-  "author": "",
-  "license": "GPLv3",
-  "dependencies": {
-    "@fastify/autoload": "^5.7.1",
-    "@fastify/sensible": "^5.1.0",
-    "@fastify/static": "^6.11.0",
-    "@fastify/websocket": "^8.2.0",
-    "axios": "^0.24.0",
-    "concurrently": "^6.5.1",
-    "env-var": "^7.4.1",
-    "fastify": "^4.22.2",
-    "fastify-plugin": "^4.5.1",
-    "form-data": "^4.0.0",
-    "got": "^11.8.6",
-    "kafkajs": "^1.16.0",
-    "lodash": "^4.17.21",
-    "moment": "^2.29.4",
-    "uuid": "^8.3.2",
-    "ws": "^8.13.0"
-  },
-  "devDependencies": {
-    "coveralls": "^3.1.1",
-    "fastify-cli": "^2.15.0",
-    "prettier": "^2.8.8",
-    "tap": "^15.2.3"
+    "name": "object-detection-app",
+    "version": "0.1.0",
+    "description": "",
+    "main": "server.js",
+    "scripts": {
+      "build": "cd frontend && npm install && npm run build --force",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node server.js",
+      "dev": "NODE_ENV=development fastify start -w -p ${PORT:-8080} -l debug -P app.js",
+      "dev-all": "concurrently \"scripts/dev-backend.sh\" \"scripts/dev-frontend.sh\"",
+      "format": "prettier --write \"routes/**/*.{js,json}\" \"storage/**/*.{js,json}\" \"kafka/**/*.{js,json}\" \"socket/**/*.{js,json}\" \"frontend/src/**/*.{js,jsx,ts,tsx,json,css,scss}\" \"*.js\""
+    },
+    "nodemonConfig": {
+      "ignore": [
+        "frontend/src/*"
+      ]
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rh-aiservices-bu/object-detection-app.git"
+    },
+    "author": "",
+    "license": "GPLv3",
+    "dependencies": {
+      "@fastify/autoload": "^5.7.1",
+      "@fastify/sensible": "^5.1.0",
+      "@fastify/static": "^6.11.0",
+      "@fastify/websocket": "^8.2.0",
+      "axios": "^0.24.0",
+      "concurrently": "^6.5.1",
+      "env-var": "^7.4.1",
+      "fastify": "^4.22.2",
+      "fastify-plugin": "^4.5.1",
+      "form-data": "^4.0.0",
+      "got": "^11.8.6",
+      "kafkajs": "^1.16.0",
+      "lodash": "^4.17.21",
+      "moment": "^2.29.4",
+      "uuid": "^8.3.2",
+      "ws": "^8.13.0"
+    },
+    "devDependencies": {
+      "coveralls": "^3.1.1",
+      "fastify-cli": "^2.15.0",
+      "prettier": "^2.8.8",
+      "tap": "^15.2.3"
+    }
   }
-}
+  
