@@ -1,10 +1,10 @@
 {
   "name": "object-detection-app",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build --legacy-peer-deps",
+    "build": "cd frontend && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "NODE_ENV=development fastify start -w -p ${PORT:-8080} -l debug -P app.js",
