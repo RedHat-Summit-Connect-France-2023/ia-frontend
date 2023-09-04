@@ -65,10 +65,11 @@ import {
   faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-//import QRCode from 'qrcode';
+import QRCode from 'qrcode';
 
 import "./Photo.scss";
 import "./fonts.css"
+import { tokenToString } from "typescript";
 function Photo({
   reset,
   searchPhoto,
@@ -121,13 +122,13 @@ useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prediction]);
 
- /*  useEffect(() => {
+  useEffect(() => {
     const currentAddress = window.location.href;
     QRCode.toDataURL(currentAddress, function(err, url) {
       if (err) throw err;
       setQRCodeUrl(url);
     });
-  }, []); */
+  }, []);
 
   const videoRef = useCallback(
     (node) => {
